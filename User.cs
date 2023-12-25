@@ -49,7 +49,7 @@ public class User
                 break;
 
             case "UP":
-                if (Ys.All(y => y + 1 < Grid.GridYSize))
+                if (Ys.All(y => y + 1 <= Grid.GridYSize))
                 {
                     for (int i = 0; i < Ys.Count; i++)
                     {

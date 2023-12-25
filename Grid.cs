@@ -46,8 +46,6 @@ public class Grid
         PredSpecies = predSpecies;
         PreySpecies = preySpecies;
     }
-
-    // WHY ERRROR
     public (List<int>, List<int>) AgentsInGridSpace(List<string> agents) {
         
         List<int> preds = new List<int>();
@@ -61,8 +59,6 @@ public class Grid
 
         return (preys, preds);
     }
-
-
     public List<List<List<string>>> ClearGrid(List<List<List<string>>> GridObj)
     {
         GridObj = new List<List<List<string>>>();
@@ -239,7 +235,7 @@ public class Grid
                     if (x < GridXSize && y < GridYSize && x >= 0 && y >= 0) {
                         UsersInGrid[x][y].Add(user.ID);
 
-                        List<string> agents = AnimalsInGrid[y][x];
+                        List<string> agents = AnimalsInGrid[x][y];
                         if (agents.Count == 0) continue;
                         
                         List<int> preds = new List<int>();
@@ -283,11 +279,13 @@ public class Grid
     public void MoveUsers()
     {
         foreach (User user in AllUsers) {
-            if (user.MoveQueue.Count == 0) { continue; }
-            user.Move(user.MoveQueue[0]);
-            user.MoveQueue.RemoveAt(0);
+        foreach (var move in user.MoveQueue)
+        {
+            user.Move(move);
+            UpdateUsersInGrid();
         }
-        UpdateUsersInGrid();
+        user.MoveQueue.Clear();
+    }
         PublishUserEnergyLevels();
     }
 
@@ -295,7 +293,7 @@ public class Grid
     {
         foreach (User user in AllUsers)
         {
-            var energyData = new { clientId = user.ID, energy = user.Energy };
+            var energyData = new { clientId = user.ID, energy = Math.Round(user.Energy) };
             energyChannel.Publish("energy-update", energyData);
         } 
     }                  

@@ -50,12 +50,10 @@ class Program
             TheGrid.Interact();
             TheGrid.MoveUsers();
 
-            // At the end of the turn, make babies into adults and handle deaths
             Console.WriteLine($"{Prey.AgentsList.Count}  +{Prey.Babies.Count-Prey.DeathList.Count}   {Pred.AgentsList.Count}  +{Pred.Babies.Count-Pred.DeathList.Count}");
             Prey.NewDay();
             Pred.NewDay();
             }
-        Thread.Sleep(5000);
     }
 }  
 
