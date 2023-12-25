@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ably Presence</title>
+  </head>
+  <body>
+    <h1>Presence example</h1>
+    <h2>Present in the channel:</h2>
+    <ul id="presence-set"></ul>
+
+    <!-- Image display -->
+    <img id="imageDisplay" alt="Game state" class="bigger-image"/>
+
+    <!-- Message count display -->
+    <p id="message-count">Message count: 0</p>
+  </body>
+
+ <style> 
+    .bigger-image{
+        width:700px; 
+        image-resolution:500dpi;
+        image-rendering: pixelated;
+        } 
+</style>
+
+  <!-- Import the Ably client library -->
+  <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+
+  <script>
+    // Initialize Ably
+    let clientID_now = "user_"+Date.now();
+    const ably = new Ably.Realtime.Promise({
+      key: 'EKxBlQ.oQx81A:WjXFCFvZF1esqZChp2IwQrc0Xgi5ZBNB5qrhuOwzfnQ',
+      clientId: "user_"+Date.now(),
+    });
+    const messageQueue = []; 
+    const tickRate = 500;
+    const clientEnergyLevels = {};
+    
+
+    async function doPresence() {
+        
+        // Connect to Ably
+        await ably.connection.once("connected");
+        console.log("Connected to Ably!");
+
+        // Attach to the channel
+        const channel = ably.channels.get('spatial-ecology-game');
+        await channel.attach((err) => {
+            if (err) return console.error("Error attaching to the channel.");
+        });
+
+        // Enter the presence set of the channel
+        await channel.presence.enter("hello", (err) => {
+            if (err) return console.error("Error entering presence set.");
+            console.log("This client has entered the presence set.");
+        });
+
+         // Subscribe to presence updates
+        await channel.presence.subscribe((presenceMessage) => {
+            const { action, clientId } = presenceMessage;
+            console.log("Presence update:", action, "from:", clientId);
+
+            // Update the list of channel members when the presence set changes
+            channel.presence.get((err, members) => {
+                if (err)
+                    return console.error(`Error retrieving presence data: ${err}`);
+
+                document.getElementById("presence-set").innerHTML = members.map((member) => {
+                    const energy = clientEnergyLevels[member.clientId] || 'Unknown';
+                    return `<li>${member.clientId} (Energy: ${energy})</li>`;
+                }).join("");
+            });
+        });
+
+        // Subscribe to energy updates
+        const energyChannel = ably.channels.get('energy-channel');
+        energyChannel.subscribe('energy-update', (message) => {
+            const { clientId, energy } = message.data;
+            clientEnergyLevels[clientId] = energy;
+
+            // Update the display after receiving an energy update
+            channel.presence.get((err, members) => {
+                if (err)
+                    return console.error(`Error retrieving presence data: ${err}`);
+
+                document.getElementById("presence-set").innerHTML = members.map((member) => {
+                    const energy = clientEnergyLevels[member.clientId] || 'Unknown';
+                    return `<li>${member.clientId} (Energy: ${energy})</li>`;
+                }).join("");
+            });
+        });
+
+        // Key press event listener
+        document.addEventListener('keydown', (event) => {
+            let direction;
+            switch(event.key) {
+                case "ArrowLeft":
+                    direction = "LEFT";
+                    break;
+                case "ArrowRight":
+                    direction = "RIGHT";
+                    break;
+                case "ArrowUp":
+                    direction = "UP";
+                    break;
+                case "ArrowDown":
+                    direction = "DOWN";
+                    break;
+                default:
+                    return; // Ignore other keys
+            }
+    
+            // Publish direction message
+            channel.publish(`${clientID_now}-moves`, direction, (err) => {
+                if(err) {
+                    console.error('Error publishing message:', err);
+                } else {
+                    console.log('Published direction ' + direction + ' to ' + clientID_now);
+                }
+            });
+        });
+
+        // Subscribe to image messages
+        let messageCounter = 0;
+        channel.subscribe('image-message', (message) => {
+            displayImage(message.data);
+            messageCounter++;
+            document.getElementById("message-count").innerHTML = "Message count = " + messageCounter;
+        });
+
+        // Start processing messages from the queue
+        setInterval(processMessageQueue, tickRate);
+    }
+ 
+// Function to process one message from the queue
+function processMessageQueue() {
+    if (messageQueue.length > 0) {
+        const messageData = messageQueue.shift(); // Get the first message from the queue
+        displayImage(messageData);
+        console.log("message queue length = " + messageQueue.length);
+    }
+}
+
+// Function to display image
+function displayImage(base64String) {
+    var imgSrc = 'data:image/png;base64,' + base64String;
+    document.getElementById('imageDisplay').src = imgSrc;
+}
+
+doPresence(); 
+    
+</script>
+</html>
