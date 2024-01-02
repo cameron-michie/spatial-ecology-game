@@ -79,7 +79,7 @@ public class Agent
                 Y += (Y - StepSize > 0) ? -StepSize : StepSize;
                 break;
             case "STAY":
-                if (ParentSpecies.PredOrPrey == "Prey") Energy += Energy/8 + 12;
+                if (ParentSpecies.PredOrPrey == "Prey") Energy += Energy/5 + 20; // += Energy/8  +12;
                 if (ParentSpecies.PredOrPrey == "Predator") Energy += 4;
                 break;
         }

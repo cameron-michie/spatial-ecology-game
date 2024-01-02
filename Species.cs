@@ -28,7 +28,7 @@ public class Species
 
     public void Move()
     {
-        if (AgentsList.Count < 1000) Dying = true;
+        if (AgentsList.Count < 3500) Dying = true;
         else Dying = false;
 
         List<double[]> SpeciesCoords = new List<double[]>(AgentsList.Count);
@@ -68,21 +68,22 @@ public class Species
     }
 
     // This overload for making killed players explode into agents
-    public void InitialiseAgents(List<int> Xs, List<int> Ys)
+    public void InitialiseAgents(int numToSpawn, List<int> Xs, List<int> Ys)
     {
-        for (int i = 0; i < 30; i++)
+        int currentAgentsNum = AgentsList.Count;
+        for (int i = 0; i < numToSpawn; i++)
         {
             Random random = new Random();
             int x = Xs[random.Next(Xs.Count)];
             int y = Ys[random.Next(Ys.Count)];
-            SpeciesCoords.Add(new double[] { x,y });
-
-            Agent thisAgent = new Agent(this, i, InitialEnergy);
-            this.AgentsList.Add(thisAgent);
-            int agentX = (int)x;
-            int agentY = (int)y;
-            string yOrDCondition = (this.PredOrPrey == "Prey") ? "y" : "d";
-            this.Grid.AnimalsInGrid[agentX][agentY].Add($"{yOrDCondition}{i}");
+            // SpeciesCoords.Add(new double[] { x,y });
+            Agent thisAgent = new Agent(this, currentAgentsNum+i, 1000);
+            // AgentsList.Add(thisAgent);
+            Babies.Add(thisAgent);
+            // int agentX = (int)x;
+            // int agentY = (int)y;
+            // string yOrDCondition = (this.PredOrPrey == "Prey") ? "y" : "d";
+            // this.Grid.AnimalsInGrid[agentX][agentY].Add($"{yOrDCondition}{i}");
         }
     }
 

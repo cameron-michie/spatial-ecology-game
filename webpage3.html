@@ -4,11 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ably Presence</title>
+    <title>'Spatial Ecology' / Agar.io game</title>
   </head>
   <body>
-    <h1>Presence example</h1>
-    <h2>Present in the channel:</h2>
+    <h1>'Spatial Ecology' / Agar.io game</h1>
+    <div id="numAgents"></div>
+    <h2>Users present</h2>
     <ul id="presence-set"></ul>
 
     <!-- Image display -->
@@ -21,25 +22,30 @@
  <style> 
     .bigger-image{
         width:700px; 
-        image-resolution:500dpi;
         image-rendering: pixelated;
         } 
+    .little-image{
+        width:100px; 
+        image-rendering: pixelated;
+    }
 </style>
 
   <!-- Import the Ably client library -->
   <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
 
   <script>
+
     // Initialize Ably
     let clientID_now = "user_"+Date.now();
     const ably = new Ably.Realtime.Promise({
-      key: 'EKxBlQ.oQx81A:WjXFCFvZF1esqZChp2IwQrc0Xgi5ZBNB5qrhuOwzfnQ',
+      key: '_iU5jA.gsQOlQ:j2PoEeg_BXZ5XteImdxyEoHv6f0rOl6J6BaDkEmPD-k',
       clientId: "user_"+Date.now(),
     });
+
     const messageQueue = []; 
     const tickRate = 500;
     const clientEnergyLevels = {};
-    
+    const clientCharacterMacros = {};    
 
     async function doPresence() {
         
@@ -59,7 +65,7 @@
             console.log("This client has entered the presence set.");
         });
 
-         // Subscribe to presence updates
+        // Subscribe to presence updates
         await channel.presence.subscribe((presenceMessage) => {
             const { action, clientId } = presenceMessage;
             console.log("Presence update:", action, "from:", clientId);
@@ -69,18 +75,32 @@
                 if (err)
                     return console.error(`Error retrieving presence data: ${err}`);
 
-                document.getElementById("presence-set").innerHTML = members.map((member) => {
+                    document.getElementById("presence-set").innerHTML = members.map((member) => {
                     const energy = clientEnergyLevels[member.clientId] || 'Unknown';
-                    return `<li>${member.clientId} (Energy: ${energy})</li>`;
+                    return `<li>${member.clientId} (Energy: ${energy})
+                            <img id="${member.clientId}_characterMacro" class="little-image"/></li>`;
                 }).join("");
+
+                // Update images for each member
+                members.forEach(member => {
+                    const macro = clientCharacterMacros[member.clientId];
+                    if (macro) {
+                        displayImage(macro, member.clientId + "_characterMacro");
+                    }
+                });
+            })
             });
-        });
 
         // Subscribe to energy updates
-        const energyChannel = ably.channels.get('energy-channel');
-        energyChannel.subscribe('energy-update', (message) => {
-            const { clientId, energy } = message.data;
+        const userDataChannel = ably.channels.get('user-data-channel');
+        userDataChannel.subscribe('user-data-update', (message) => {
+            const { clientId, energy, characterMacro, numPrey, numPred } = message.data;
             clientEnergyLevels[clientId] = energy;
+            clientCharacterMacros[clientId] = characterMacro;
+
+            document.getElementById("numAgents").innerHTML =
+                `<p>Number of prey = ${numPrey}</p> 
+                 <p>Number of predators = ${numPred}</p>`;
 
             // Update the display after receiving an energy update
             channel.presence.get((err, members) => {
@@ -89,9 +109,18 @@
 
                 document.getElementById("presence-set").innerHTML = members.map((member) => {
                     const energy = clientEnergyLevels[member.clientId] || 'Unknown';
-                    return `<li>${member.clientId} (Energy: ${energy})</li>`;
+                    return `<li>${member.clientId} (Energy: ${energy})
+                            <img id="${member.clientId}_characterMacro" class="little-image"/></li>`;
                 }).join("");
-            });
+
+                // Update images for each member
+                members.forEach(member => {
+                    const macro = clientCharacterMacros[member.clientId];
+                    if (macro) {
+                        displayImage(macro, member.clientId + "_characterMacro");
+                    }
+                });
+            })
         });
 
         // Key press event listener
@@ -111,11 +140,11 @@
                     direction = "DOWN";
                     break;
                 default:
-                    return; // Ignore other keys
+                    return;
             }
     
             // Publish direction message
-            channel.publish(`${clientID_now}-moves`, direction, (err) => {
+            userDataChannel.publish(`${clientID_now}-moves`, direction, (err) => {
                 if(err) {
                     console.error('Error publishing message:', err);
                 } else {
@@ -134,7 +163,8 @@
 
         // Start processing messages from the queue
         setInterval(processMessageQueue, tickRate);
-    }
+
+        };
  
 // Function to process one message from the queue
 function processMessageQueue() {
@@ -146,9 +176,9 @@ function processMessageQueue() {
 }
 
 // Function to display image
-function displayImage(base64String) {
+function displayImage(base64String, id='imageDisplay') {
     var imgSrc = 'data:image/png;base64,' + base64String;
-    document.getElementById('imageDisplay').src = imgSrc;
+    document.getElementById(id).src = imgSrc;
 }
 
 doPresence(); 
