@@ -28,7 +28,7 @@ class Program
 {
     static async Task Main(string[] args)
     {
-
+        
         int gridxsize = 120; // set to 120
         int gridysize = 120;
 
@@ -48,8 +48,8 @@ class Program
         Species Pred = new Species("Predator", Pred_E0, Pred_EP, Pred_N, TheGrid);
         TheGrid.SetSpecies(Pred, Prey);
   
-        int numIterations = 5000;
-        for (int i = 0; i < numIterations; i++)
+        bool gameReady = true;
+        while (gameReady)
         {
             await TheGrid.BroadcastGameState();
             TheGrid.AnimalsInGrid = TheGrid.ClearGrid(TheGrid.AnimalsInGrid);
@@ -58,15 +58,14 @@ class Program
             Pred.Move();
             TheGrid.Interact();
             TheGrid.MoveUsers();
-            TheGrid.KillUsers();
+            gameReady = TheGrid.KillUsers();
 
             Console.WriteLine($"{Prey.AgentsList.Count}  +{Prey.Babies.Count-Prey.DeathList.Count}   {Pred.AgentsList.Count}  +{Pred.Babies.Count-Pred.DeathList.Count}");
             Prey.NewDay();
             Pred.NewDay();
-            // Thread.Sleep(5000);
         }
     }
-}  
+}
 
 // using System;
 // using System.Threading.Tasks;
