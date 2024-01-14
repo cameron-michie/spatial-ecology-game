@@ -63,7 +63,8 @@ class Program
             Console.WriteLine($"{Prey.AgentsList.Count}  +{Prey.Babies.Count-Prey.DeathList.Count}   {Pred.AgentsList.Count}  +{Pred.Babies.Count-Pred.DeathList.Count}");
             Prey.NewDay();
             Pred.NewDay();
-            }
+            // Thread.Sleep(5000);
+        }
     }
 }  
 
