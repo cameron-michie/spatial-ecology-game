@@ -185,7 +185,7 @@ public class Grid
             }
         }
 
-        if (NumUsers >= 2) _presenceReady.TrySetResult(true);
+        if (NumUsers >= 1) _presenceReady.TrySetResult(true);
 
         userDataChannel.Presence.Subscribe(PresenceAction.Enter, member =>
         {
@@ -200,7 +200,7 @@ public class Grid
                     NumUsers++;
                 }
 
-                if (NumUsers >= 2) _presenceReady.TrySetResult(true);
+                if (NumUsers >= 1) _presenceReady.TrySetResult(true);
             }
         });
 
@@ -543,7 +543,7 @@ public class Grid
             RemoveUserFromGrid(user);
         }
         KillList.Clear();
-        return AllUsers.Count > 1;
+        return AllUsers.Count >= 1;
     }
     private void RemoveUserFromGrid(User user)
     {
