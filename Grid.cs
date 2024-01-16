@@ -4,10 +4,15 @@ using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
 using IO.Ably;
 using IO.Ably.Realtime;
+using System.IO;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Diagnostics.Contracts;
+using System;
+using System.Linq;
 
-namespace ReactionDiffusionLibrary;
+namespace SpatialEcology;
 
 public class Grid
 {
@@ -26,6 +31,7 @@ public class Grid
     public List<User> AllUsers { get; set; } = new List<User>();
     IRealtimeChannel channel;
     IRealtimeChannel userDataChannel;
+    private TaskCompletionSource<bool> _presenceReady = new TaskCompletionSource<bool>();
     public Grid(int max_x, int max_y)
     {
         GridXSize = max_x;
@@ -179,6 +185,8 @@ public class Grid
             }
         }
 
+        if (NumUsers >= 2) _presenceReady.TrySetResult(true);
+
         userDataChannel.Presence.Subscribe(PresenceAction.Enter, member =>
         {
             lock (userCountLock)
@@ -191,6 +199,8 @@ public class Grid
                     AvailableColors.RemoveAt(0);
                     NumUsers++;
                 }
+
+                if (NumUsers >= 2) _presenceReady.TrySetResult(true);
             }
         });
 
@@ -213,6 +223,8 @@ public class Grid
                 }
             }
         });
+        // Await two presence members on channel
+        await _presenceReady.Task;
     }
     public void DisplayGridState(List<List<List<string>>> grid)
     {
@@ -524,14 +536,14 @@ public class Grid
             return new Color(r, g, b);
         }
     }
-    public void KillUsers() 
+    public bool KillUsers() 
     {
         foreach (User user in KillList) {
             AllUsers.Remove(user);
             RemoveUserFromGrid(user);
         }
-
         KillList.Clear();
+        return AllUsers.Count > 1;
     }
     private void RemoveUserFromGrid(User user)
     {
@@ -547,10 +559,3 @@ public class Grid
         }
     }
 }
-// class CustomLogHandler : ILoggerSink
-// {
-//     public void LogEvent(LogLevel level, string message)
-//     {
-//         Console.WriteLine($"Handler LogLevel : {level}, Data :{message}");
-//     }
-// }

@@ -1,5 +1,5 @@
-namespace ReactionDiffusionLibrary;
-
+using System;
+namespace SpatialEcology;
 public class Agent
 {
     public Species ParentSpecies { get; private set; }
