@@ -1,9 +1,14 @@
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using IO.Ably;
+using System;
 using IO.Ably.Realtime;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace ReactionDiffusionLibrary;
+
+
+namespace SpatialEcology;
 
 public class User
 {

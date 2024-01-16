@@ -1,7 +1,11 @@
 using System.Runtime.Serialization;
 using Microsoft.VisualBasic;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
-namespace ReactionDiffusionLibrary;
+
+namespace SpatialEcology;
 
 public class Species
 {
