@@ -42,8 +42,6 @@ public class Grid
         UsersInGrid = ClearGrid(UsersInGrid);
 
         ClientOptions options = new ClientOptions("_iU5jA.gsQOlQ:j2PoEeg_BXZ5XteImdxyEoHv6f0rOl6J6BaDkEmPD-k") { ClientId = "grid-client" };
-        // options.LogLevel = LogLevel.Debug;
-        // options.LogHandler = new CustomLogHandler();
         AblyRealtime realtime = new AblyRealtime(options);
         channel = realtime.Channels.Get("spatial-ecology-game");
         userDataChannel = realtime.Channels.Get("user-data-channel");
@@ -557,5 +555,8 @@ public class Grid
                 }
             }
         }
+    }
+    public async Task UpdateGame(string update) {
+        await userDataChannel.PublishAsync("game-update", update);
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/cameronoscarmichie/Documents/GitHub/SpatialEcology/azure-function/azure-function.csproj": {}
+    "/Users/cameronoscarmichie/ably-spatial-ecology/azure-function.csproj": {}
   },
   "projects": {
-    "/Users/cameronoscarmichie/Documents/GitHub/SpatialEcology/azure-function/azure-function.csproj": {
+    "/Users/cameronoscarmichie/ably-spatial-ecology/azure-function.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/cameronoscarmichie/Documents/GitHub/SpatialEcology/azure-function/azure-function.csproj",
+        "projectUniqueName": "/Users/cameronoscarmichie/ably-spatial-ecology/azure-function.csproj",
         "projectName": "azure-function",
-        "projectPath": "/Users/cameronoscarmichie/Documents/GitHub/SpatialEcology/azure-function/azure-function.csproj",
+        "projectPath": "/Users/cameronoscarmichie/ably-spatial-ecology/azure-function.csproj",
         "packagesPath": "/Users/cameronoscarmichie/.nuget/packages/",
-        "outputPath": "/Users/cameronoscarmichie/Documents/GitHub/SpatialEcology/azure-function/obj/",
+        "outputPath": "/Users/cameronoscarmichie/ably-spatial-ecology/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/cameronoscarmichie/.nuget/NuGet/NuGet.Config"

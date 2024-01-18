@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LytSbLbZxaX+wwZqSQLEoAmoh/olhTuiurMu6lrQNY0X3pIDeWhrxjRzkQVT01jUco8ezPvPtM0OBqg1IdL58g==",
+  "dgSpecHash": "De7HjIVHuPZq4uZvWOL3+TGi3Dfpl7ugjm9s+QcHEFZWa0/QuJHcQ5EZKnVcknRp/XbTohaNyR4Aov6jt6OqoQ==",
   "success": true,
-  "projectFilePath": "/Users/cameronoscarmichie/Documents/GitHub/SpatialEcology/azure-function/azure-function.csproj",
+  "projectFilePath": "/Users/cameronoscarmichie/ably-spatial-ecology/azure-function.csproj",
   "expectedPackageFiles": [
     "/Users/cameronoscarmichie/.nuget/packages/ably.io/1.2.14/ably.io.1.2.14.nupkg.sha512",
     "/Users/cameronoscarmichie/.nuget/packages/microsoft.aspnet.webapi.client/5.2.8/microsoft.aspnet.webapi.client.5.2.8.nupkg.sha512",
@@ -144,8 +144,8 @@
     "/Users/cameronoscarmichie/.nuget/packages/system.xml.readerwriter/4.3.0/system.xml.readerwriter.4.3.0.nupkg.sha512",
     "/Users/cameronoscarmichie/.nuget/packages/system.xml.xdocument/4.3.0/system.xml.xdocument.4.3.0.nupkg.sha512",
     "/Users/cameronoscarmichie/.nuget/packages/windowsazure.storage/9.3.1/windowsazure.storage.9.3.1.nupkg.sha512",
-    "/Users/cameronoscarmichie/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.23/microsoft.aspnetcore.app.ref.6.0.23.nupkg.sha512",
-    "/Users/cameronoscarmichie/.nuget/packages/microsoft.netcore.app.ref/6.0.23/microsoft.netcore.app.ref.6.0.23.nupkg.sha512"
+    "/Users/cameronoscarmichie/.nuget/packages/microsoft.netcore.app.ref/6.0.23/microsoft.netcore.app.ref.6.0.23.nupkg.sha512",
+    "/Users/cameronoscarmichie/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.23/microsoft.aspnetcore.app.ref.6.0.23.nupkg.sha512"
   ],
   "logs": []
 }

@@ -49,6 +49,7 @@ namespace SpatialEcology
             Species Pred = new Species("Predator", Pred_E0, Pred_EP, Pred_N, TheGrid);
             TheGrid.SetSpecies(Pred, Prey);
 
+            await TheGrid.UpdateGame("start");
             bool gameReady = true;
             while (gameReady)
             {
@@ -67,6 +68,7 @@ namespace SpatialEcology
                 Pred.NewDay();
             }
 
+            await TheGrid.UpdateGame("end");
             return new OkObjectResult(responseMessage);
         }
     }
