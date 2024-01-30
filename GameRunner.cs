@@ -36,10 +36,10 @@ namespace SpatialEcology
             int Prey_E0 = 50; 
             int Prey_EP = 10;
             int Prey_N = 1000; // 1000
-
+            
             int Pred_E0 = 200;
-            int Pred_EP = 40;
-            int Pred_N = 1000;// 1000
+            int Pred_EP = 80;
+            int Pred_N = 700;// 1000
 
             Grid TheGrid = new Grid(gridxsize, gridysize);
             Species Prey = new Species("Prey", Prey_E0, Prey_EP, Prey_N, TheGrid);
